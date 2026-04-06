@@ -195,6 +195,45 @@ export class DoorayClient {
     return res.result;
   }
 
+  async updatePost(
+    projectId: string,
+    postId: string,
+    body: {
+      subject?: string;
+      body?: { mimeType: string; content: string };
+      toMemberIds?: string[];
+      priority?: string;
+      dueDate?: string;
+      dueDateFlag?: boolean;
+      tagIds?: string[];
+    }
+  ): Promise<Post> {
+    const res = await this.request<Post>(
+      "PUT",
+      `/project/v1/projects/${projectId}/posts/${postId}`,
+      body
+    );
+    return res.result;
+  }
+
+  async createPostComment(
+    projectId: string,
+    postId: string,
+    body: { content: string; mimeType?: string }
+  ): Promise<PostLog> {
+    const res = await this.request<PostLog>(
+      "POST",
+      `/project/v1/projects/${projectId}/posts/${postId}/logs`,
+      {
+        body: {
+          mimeType: body.mimeType || "text/x-markdown",
+          content: body.content,
+        },
+      }
+    );
+    return res.result;
+  }
+
   getDomain(): string {
     return this.domain;
   }
